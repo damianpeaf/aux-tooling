@@ -1,0 +1,5 @@
+venv
+repos
+failed_repos.txt
+links.csv
+*.html
