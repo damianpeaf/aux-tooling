@@ -1,53 +1,60 @@
-# Aux Tools
+# PlagCheck
 
-Herramienta para descargar y filtrar entregas (repositorios) de estudiantes desde UEDI.
+## Descripción
+
+PlagCheck es una herramienta automatizada para extraer enlaces de repositorios desde archivos HTML, analizar y filtrar dichos enlaces, clonar los repositorios y filtrar archivos específicos en función de extensiones permitidas. También incluye integración con JPlag para la detección de similitudes en código.
+
+## Características principales
+
+- Extracción automática de enlaces desde archivos HTML.
+- Identificación del nombre y carnet desde los enlaces.
+- Clonación de repositorios con múltiples métodos de recuperación.
+- Eliminación de archivos innecesarios según extensiones configurables.
+- Generación de reportes de repositorios fallidos.
+- Integración con JPlag para detección de similitudes en código.
+
+## Requerimientos
+
+- Python 3.8+
+- Git
+- Java instalado (para ejecutar JPlag)
+- Librerías de Python necesarias (pueden instalarse con `pip install -r requirements.txt`):
+  - `beautifulsoup4`
+  - `questionary`
 
 ## Instalación
 
-Antes de ejecutar la herramienta, es necesario configurar un entorno virtual de Python y asegurarse de que todas las dependencias estén instaladas.
+1. Instalar dependencias:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Asegurar que `git` y `java` estén instalados y accesibles desde la terminal.
 
-### 1. Crear y activar un entorno virtual
+## Uso
 
-```bash
-python -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
-```
+1. Coloca los archivos HTML dentro de la carpeta `./entregas`.
+2. Ejecuta el script principal:
+   ```bash
+   python index.py
+   ```
+3. Responde las preguntas interactivas sobre las extensiones de archivos permitidos.
+4. Los resultados se guardarán en:
+   - `links.csv`: Contiene la lista de repositorios detectados.
+   - `repos/`: Carpeta donde se almacenan los repositorios clonados.
+   - `failed_repos.txt`: Reporte de los repositorios que fallaron en la clonación.
+   - `resultados.zip`: Salida del análisis de JPlag.
 
-### 2. Instalar dependencias
+## Personalización
 
-```bash
-pip install -r requirements.txt
-```
+Puedes modificar las siguientes partes del código para adaptarlo a diferentes necesidades:
 
-## Uso de la herramienta
+- **Extensiones permitidas**: Cambiar `default_extensions` en `main()` para filtrar otros tipos de archivos.
+- **Expresión regular para carnet**: Ajustar `extract_carnet_from_link()` si el formato de los enlaces cambia.
+- **Métodos de clonación**: Mejorar la estrategia en `clone_repo()` si se requieren métodos alternativos.
+- **Parámetros de JPlag**: Modificar la línea de ejecución en `main()` si se usa otro lenguaje o configuración.
 
-### 1. Descargar las entregas
+## Notas
 
-Las entregas deben descargarse desde UEDI y colocarse en la carpeta `entregas/`. Cada entrega es un archivo HTML que contiene enlaces a los repositorios de los estudiantes.
-
-### 2. Ejecutar la herramienta
-
-Para procesar las entregas y clonar los repositorios, ejecutar el siguiente comando:
-
-```bash
-python index.py
-```
-
-Este proceso:
-
-- Extraerá los enlaces de los repositorios desde los archivos HTML en `entregas/`.
-- Generará un archivo `repositorios.csv` con la información de los estudiantes.
-- Clonará los repositorios en la carpeta `repos/`.
-- Filtrará los archivos descargados dejando solo los que tienen extensiones permitidas.
-- Generará un reporte de errores si algunos repositorios no pudieron ser clonados.
-
-### 3. Revisar resultados
-
-- Los repositorios clonados estarán en la carpeta `repos/`.
-- En caso de errores, se generará un archivo de reporte con detalles sobre los repositorios que no se pudieron clonar.
-
-## Notas adicionales
-
-- Si la clonación de un repositorio falla, el sistema intentará varios métodos alternativos.
-- Eliminar y recrear la carpeta `repos/` en cada ejecución garantiza que siempre se descarguen versiones actualizadas.
-- Si un archivo `repositorios.csv` está en uso, se intentará guardar con un nombre alternativo.
+- La herramienta intenta varias estrategias para clonar repositorios, pero si todos los intentos fallan, los detalles del error se almacenan en `failed_repos.txt`.
+- Los repositorios clonados se almacenan en `repos/`, y se eliminan archivos no deseados automáticamente.
+- Si se detectan archivos autogenerados, estos también se eliminan para evitar ruido en el análisis.
